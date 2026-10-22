@@ -1,0 +1,184 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: rgb(252, 245, 236);
+    font-family: 'Times New Roman', Times, serif;
+    min-height: 10vh;
+}
+
+.links{
+    width: 1000px;
+    margin:auto;
+    padding: 120px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1{
+    text-align: center;
+    font-size: 55px;
+    font-weight: 500;
+    margin-bottom: 100px;
+    text-transform: uppercase;
+    display: inline-block;
+    padding: 6px 10px;
+    color: black;
+    margin: auto;
+    border: 5px solid #061312ed;
+}
+
+.contenedores{
+    width: 150%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 48px;
+}
+
+.boton{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    height: 100px;
+    background-color: rgb(43, 29, 29);
+    color: azure;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 20px;
+    font-weight: 500px;
+    border: inset;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 3s;
+    border-radius: 5px;
+
+}
+
+.boton.uno span{
+    transition: .4s ease-in-out all;
+    position: absolute;
+    left: 17%;
+}
+
+.boton.uno:hover span{
+    left: 208px;
+     
+}
+
+.boton.uno .icono {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    z-index: 2;
+    left: 9%;
+    transition: .3s ease-in-out all;
+    opacity: 0;
+}
+
+.boton.uno svg{
+    color: antiquewhite;
+    width: 35px;
+    height: 35px;
+}
+
+.boton.uno:hover {
+    background: #036e65ed;
+}
+
+.boton.uno:hover .icono{
+    left: calc(30%);
+    opacity: 1;
+}
+
+
+
+
+
+
+.boton.dos span{
+    transition: .4s ease-in-out all;
+    position: absolute;
+    left: 45%;
+}
+
+.boton.dos:hover span{
+    left: 780px;
+}
+
+.boton.dos .icono.dos{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    z-index: 2;
+    left: 36%;
+    transition: .3s ease-in-out all;
+    opacity: 0;
+}
+
+.boton.dos svg{
+    color: antiquewhite;
+    width: 35px;
+    height: 35px;
+}
+
+.boton.dos:hover{
+    background: #7c1d85ed;
+}
+
+.boton.dos:hover .icono{
+    left: calc(60% - 50px);
+    opacity: 1;
+}
+
+a{
+    color: aliceblue;
+    text-align: center;
+    height: 20px;
+}
+
+
+.boton.tres span{
+    transition: .4s ease-in-out all;
+    position: absolute;
+    left: 69%;
+}
+
+.boton.tres:hover span{
+    left: 1250px;
+}
+
+.boton.tres .icono.tres{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    z-index: 2;
+    left: 56%;
+    transition: .3s ease-in-out all;
+    opacity: 0;
+}
+
+.boton.tres svg{
+    color: antiquewhite;
+    width: 35px;
+    height: 35px;
+}
+
+.boton.tres:hover{
+    background: #8f2323ed;
+}
+
+.boton.tres:hover .icono{
+    left: calc(87% - 50px);
+    opacity: 1;
+}
+
+a{
+    color: aliceblue;
+    text-align: center;
+    height: 20px;
+}

@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Juego Despeja la X</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* Concepto: una sola columna, mucho espacio, un solo color de acento. Primero se lee, luego se practica. */
+:root {
+  --bg: #F6F8FC;
+  --card: #FFFFFF;
+  --fg: #1B2540;
+  --muted: #55617A;
+  --line: #DCE3EE;
+  --soft: #EAF0FB;
+  --accent: #2457C5;
+  --on-accent: #FFFFFF;
+  --good: #167A4B;
+  --good-soft: #E3F4EB;
+  --bad: #B3261E;
+  --bad-soft: #FCE9E7;
+  --f-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1626; --card: #17223A; --fg: #E9EEF8; --muted: #A3B0C8; --line: #2A3856; --soft: #1D2B49;
+    --accent: #8FB0FF; --on-accent: #0B1220; --good: #5FD39A; --good-soft: #15332A; --bad: #FF8A80; --bad-soft: #3A1E22;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1626; --card: #17223A; --fg: #E9EEF8; --muted: #A3B0C8; --line: #2A3856; --soft: #1D2B49;
+  --accent: #8FB0FF; --on-accent: #0B1220; --good: #5FD39A; --good-soft: #15332A; --bad: #FF8A80; --bad-soft: #3A1E22;
+  color-scheme: dark;
+}
+ 
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--f-body);
+  font-size: 18px;
+  line-height: 1.65;
+  padding-block: 40px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+main { max-width: 720px; margin: 0 auto; display: grid; gap: 56px; }
+h1, h2 { margin: 0; line-height: 1.15; text-wrap: balance; letter-spacing: -0.015em; }
+h1 { font-size: clamp(2.2rem, 7vw, 3.2rem); font-weight: 800; }
+h2 { font-size: clamp(1.5rem, 4.5vw, 1.9rem); font-weight: 700; }
+p { margin: 0; max-width: 62ch; }
+section { display: grid; gap: 16px; }
+.mono, .eq { font-family: var(--f-mono); font-weight: 700; }
+.hl { color: var(--accent); font-weight: 700; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+ 
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: clamp(18px, 4vw, 28px); }
+ 
+.step { padding: 12px 0; border-bottom: 1px solid var(--line); animation: rise .3s ease both; }
+.step .eq { font-size: clamp(1.5rem, 6vw, 2.2rem); }
+.step p { color: var(--muted); font-size: 1rem; }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+ 
+.btn { font: inherit; font-weight: 600; font-size: 1rem; background: var(--card); color: var(--fg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 18px; min-height: 46px; cursor: pointer; }
+.btn:hover:not(:disabled) { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+ 
+/* Práctica */
+.levels { display: flex; flex-wrap: wrap; gap: 8px; }
+.levels .btn { padding: 8px 16px; min-height: 42px; }
+.levels .btn[aria-pressed="true"] { background: var(--soft); border-color: var(--accent); color: var(--accent); }
+.play { display: grid; gap: 18px; }
+.top { display: flex; flex-wrap: wrap; gap: 10px 20px; justify-content: space-between; align-items: center; }
+.count { color: var(--muted); font-size: .95rem; }
+.big { text-align: center; background: var(--soft); border-radius: 12px; padding: 22px 10px; }
+.big .eq { font-size: clamp(1.9rem, 8vw, 3rem); overflow-wrap: anywhere; }
+.big small { display: block; color: var(--muted); font-size: .95rem; margin-top: 2px; }
+.big.won .eq { color: var(--good); }
+.ask { font-weight: 700; font-size: 1.1rem; }
+.opts { display: grid; gap: 10px; }
+.opt { font: inherit; font-weight: 600; text-align: left; background: var(--card); color: var(--fg); border: 1.5px solid var(--line); border-radius: 12px; padding: 14px 18px; min-height: 52px; cursor: pointer; }
+.opt:hover:not(:disabled) { border-color: var(--accent); background: var(--soft); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); color: var(--bad); }
+.opt:disabled { cursor: default; }
+.msg { border-radius: 12px; padding: 12px 16px; font-size: 1rem; }
+.msg.bad { background: var(--bad-soft); color: var(--bad); }
+.msg.good { background: var(--good-soft); color: var(--good); }
+.msg:empty { display: none; }
+.hist { display: grid; gap: 0; }
+.hist .step { padding: 8px 0; }
+.hist .step .eq { font-size: 1.2rem; }
+.hist .step p { font-size: .95rem; }
+ 
+@media (max-width: 520px) {
+  body { font-size: 17px; padding-block: 28px 56px; }
+  main { gap: 44px; }
+}
+@media (prefers-reduced-motion: reduce) { .step { animation: none; } }
+</style>
+</head>
+<body>
+ 
+<main>
+  <section>
+    <h1>Caza la <span class="hl">x</span></h1>
+    <p>Te muestro una ecuación y tú eliges qué paso hacer. Si te equivocas, te explico por qué.</p>
+    <div class="card play">
+      <div class="top">
+        <div class="levels" role="group" aria-label="Dificultad" id="levels"></div>
+        <div class="count">Resueltas: <b id="sSolved">0</b></div>
+      </div>
+ 
+      <div class="big" id="big">
+        <div class="eq" id="eq" aria-live="polite">2x + 3 = 11</div>
+        <small id="goal">Deja la x sola</small>
+      </div>
+ 
+      <div id="ask">
+        <p class="ask">¿Qué paso haces ahora?</p>
+        <div class="opts" id="opts" style="margin-top:10px"></div>
+      </div>
+ 
+      <div class="msg" id="msg" aria-live="polite"></div>
+      <div class="row" id="nextRow" hidden style="margin-top:0">
+        <button class="btn primary" id="next" type="button">Otra ecuación</button>
+      </div>
+ 
+      <div class="hist" id="hist" aria-label="Tus pasos"></div>
+    </div>
+  </section>
+</main>
+ 
+<script>
+(function () {
+  var M = "\u2212";
+  var $ = function (s) { return document.querySelector(s); };
+  var R = function (a, b) { return a + Math.floor(Math.random() * (b - a + 1)); };
+ 
+  /* ---------- Práctica ---------- */
+  function num(n) { return n < 0 ? M + Math.abs(n) : String(n); }
+  function side(x, c) {
+    if (x === 0) return num(c);
+    var xs = x === 1 ? "x" : x === -1 ? M + "x" : num(x) + "x";
+    if (c === 0) return xs;
+    return xs + (c > 0 ? " + " + c : " " + M + " " + Math.abs(c));
+  }
+  function fmt(s) { return side(s.lx, s.lc) + " = " + side(s.rx, s.rc); }
+ 
+  var level = 2, eq, orig, solution, solved = 0, hist = [], won = false, current = null;
+ 
+  function gen(lv) {
+    var x = R(2, 9), a, b, c;
+    if (lv === 1) {
+      b = R(1, 9);
+      if (Math.random() < 0.5) return { s: { lx: 1, lc: b, rx: 0, rc: x + b }, x: x };
+      b = R(1, x - 1);
+      return { s: { lx: 1, lc: -b, rx: 0, rc: x - b }, x: x };
+    }
+    if (lv === 2) {
+      a = R(2, 5); b = R(1, 9);
+      if (Math.random() < 0.5) return { s: { lx: a, lc: b, rx: 0, rc: a * x + b }, x: x };
+      b = R(1, Math.min(9, a * x - 1));
+      return { s: { lx: a, lc: -b, rx: 0, rc: a * x - b }, x: x };
+    }
+    a = R(3, 6); c = R(1, a - 1); b = R(1, 9);
+    return { s: { lx: a, lc: b, rx: c, rc: (a - c) * x + b }, x: x };
+  }
+ 
+  function isSolved(s) {
+    return (s.lx === 1 && s.lc === 0 && s.rx === 0) || (s.rx === 1 && s.rc === 0 && s.lx === 0);
+  }
+ 
+  function apply(s, m) {
+    var r = { lx: s.lx, lc: s.lc, rx: s.rx, rc: s.rc };
+    if (m.o === "+" || m.o === "-") {
+      var d = m.o === "+" ? m.k : -m.k;
+      if (m.t === "x") { r.lx += d; r.rx += d; } else { r.lc += d; r.rc += d; }
+    } else if (m.o === "*") {
+      r.lx *= m.k; r.lc *= m.k; r.rx *= m.k; r.rc *= m.k;
+    } else {
+      r.lx /= m.k; r.lc /= m.k; r.rx /= m.k; r.rc /= m.k;
+    }
+    return r;
+  }
+ 
+  function what(m) { return m.k + (m.t === "x" ? "x" : ""); }
+  function label(m) {
+    if (m.o === "+") return "Sumar " + what(m) + " en los dos lados";
+    if (m.o === "-") return "Restar " + what(m) + " en los dos lados";
+    if (m.o === "*") return "Multiplicar por " + m.k + " en los dos lados";
+    return "Dividir entre " + m.k + " en los dos lados";
+  }
+  function past(m) {
+    if (m.o === "+") return "Sumamos " + what(m) + " en los dos lados";
+    if (m.o === "-") return "Restamos " + what(m) + " en los dos lados";
+    if (m.o === "*") return "Multiplicamos por " + m.k + " en los dos lados";
+    return "Dividimos entre " + m.k + " en los dos lados";
+  }
+ 
+  function bestMove(s) {
+    if (s.lx !== 0 && s.rx !== 0) return { o: "-", t: "x", k: Math.min(s.lx, s.rx) };
+    if (s.lc !== 0) return { o: s.lc > 0 ? "-" : "+", t: "n", k: Math.abs(s.lc) };
+    return { o: "/", t: "n", k: s.lx };
+  }
+ 
+  function options(s, m) {
+    var flip = { o: m.o === "+" ? "-" : m.o === "-" ? "+" : m.o === "/" ? "*" : "/", t: m.t, k: m.k };
+    var flipFb = m.o === "/" ? "Para quitar una multiplicación se divide, no se multiplica."
+      : m.o === "-" ? "Casi. Para quitar un número que se suma, se resta."
+      : "Casi. Para quitar un número que se resta, se suma.";
+    var third, thirdFb;
+    if (s.lx !== 0 && s.rx !== 0) {
+      third = { o: s.lc > 0 ? "-" : "+", t: "n", k: Math.abs(s.lc) };
+      thirdFb = "Todavía no. Con x en los dos lados, primero junta las x en un solo lado.";
+    } else if (s.lx > 1 && s.lc !== 0) {
+      third = { o: "/", t: "n", k: s.lx };
+      thirdFb = "Todavía no. Primero se quita el número que suma o resta, y después el que multiplica a la x.";
+    } else if (s.lx > 1) {
+      third = { o: "-", t: "n", k: s.lx };
+      thirdFb = "Restar no quita una multiplicación. Para eso se divide.";
+    } else {
+      third = { o: "*", t: "n", k: 2 };
+      thirdFb = "Eso no deja la x sola. Hay que quitar el número que acompaña a la x.";
+    }
+    var list = [
+      { m: m, ok: true },
+      { m: flip, ok: false, fb: flipFb },
+      { m: third, ok: false, fb: thirdFb }
+    ];
+    for (var i = list.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = list[i]; list[i] = list[j]; list[j] = t;
+    }
+    return list;
+  }
+ 
+  function setMsg(text, cls) { var m = $("#msg"); m.textContent = text; m.className = "msg" + (cls ? " " + cls : ""); }
+ 
+  function drawOptions() {
+    var box = $("#opts");
+    box.innerHTML = "";
+    current.forEach(function (o) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "opt"; b.textContent = label(o.m);
+      b.addEventListener("click", function () { choose(o, b); });
+      box.appendChild(b);
+    });
+  }
+ 
+  function drawHist() {
+    var h = $("#hist");
+    h.innerHTML = "";
+    hist.forEach(function (it) {
+      var d = document.createElement("div");
+      d.className = "step";
+      d.innerHTML = '<div class="eq"></div><p></p>';
+      d.children[0].textContent = it.eq;
+      d.children[1].textContent = it.note;
+      h.appendChild(d);
+    });
+  }
+ 
+  function choose(o, btn) {
+    if (won) return;
+    if (!o.ok) {
+      btn.classList.add("wrong"); btn.disabled = true;
+      setMsg(o.fb, "bad");
+      return;
+    }
+    var m = o.m;
+    eq = apply(eq, m);
+    hist.push({ eq: fmt(eq), note: past(m) });
+    $("#eq").textContent = fmt(eq);
+    drawHist();
+    if (isSolved(eq)) {
+      won = true; solved++;
+      $("#sSolved").textContent = solved;
+      $("#big").classList.add("won");
+      $("#goal").textContent = "¡Resuelto! x = " + solution;
+      $("#ask").hidden = true;
+      $("#nextRow").hidden = false;
+      var lv = orig.lx * solution + orig.lc, rv = orig.rx * solution + orig.rc;
+      setMsg("¡Muy bien! Comprobación: con x = " + solution + ", la izquierda vale " + lv + " y la derecha vale " + rv + ". Son iguales ✓", "good");
+    } else {
+      setMsg("¡Correcto! Sigue con el siguiente paso.", "good");
+      current = options(eq, bestMove(eq));
+      drawOptions();
+    }
+  }
+ 
+  function newGame() {
+    var g = gen(level);
+    eq = g.s; solution = g.x; orig = { lx: eq.lx, lc: eq.lc, rx: eq.rx, rc: eq.rc };
+    hist = []; won = false;
+    $("#eq").textContent = fmt(eq);
+    $("#big").classList.remove("won");
+    $("#goal").textContent = "Deja la x sola";
+    $("#ask").hidden = false;
+    $("#nextRow").hidden = true;
+    setMsg("");
+    drawHist();
+    current = options(eq, bestMove(eq));
+    drawOptions();
+  }
+ 
+  $("#next").addEventListener("click", newGame);
+ 
+  var names = ["Fácil", "Medio", "Difícil"];
+  var lvEl = $("#levels");
+  names.forEach(function (n, i) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "btn"; b.textContent = n;
+    b.setAttribute("aria-pressed", i + 1 === level ? "true" : "false");
+    b.addEventListener("click", function () {
+      level = i + 1;
+      lvEl.querySelectorAll("button").forEach(function (x, j) { x.setAttribute("aria-pressed", j === i ? "true" : "false"); });
+      newGame();
+    });
+    lvEl.appendChild(b);
+  });
+ 
+  newGame();
+})();
+</script>
+</body>
+</html>

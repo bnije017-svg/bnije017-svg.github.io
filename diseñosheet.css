@@ -1,0 +1,181 @@
+
+body{
+    margin:0;
+    background-color: #f1eaea ;
+}
+
+header{
+    background-color: rgb(195, 170, 243);
+    color:rgb(2, 4, 5);
+    padding: 2rem 3rem;
+}
+header h1{
+    font-size: 4rem;
+    text-align: center;
+}
+
+.load{
+    text-align: center;
+}
+
+.h1{
+    color:rgb(4, 8, 240)
+
+}
+
+section{
+    width: 800px;
+    margin: 0 auto;
+    
+}
+
+section div{
+    background-color: aliceblue;
+    margin:1rem 0;
+    border-radius: 0.5rem;
+    align-items: center;
+}
+
+.card{
+    margin: 1rem 0;
+    border-radius: 0.5rem;
+    padding: 0.50rem 0;
+}
+
+div h1{
+    color:blue;
+}
+
+div p{
+    text-align: center;
+    font-size: 1rem;
+}
+
+.card{
+    border: grey;
+    border-radius: 20px;
+    border-style:solid ;
+    line-height: 10px;
+}
+
+.azul{
+    word-spacing: 80px;
+}
+
+.prueba{
+    word-spacing: 30px;
+}
+
+.cardos{
+    padding: 10px;   
+    border: grey;
+    border-radius: 17px;
+    border-style: solid; 
+}
+
+.cardtres{
+    padding: 10px;
+    border: grey;
+    border-radius: 17px;
+    border-style: solid; 
+}
+
+.cardcuatro{
+    padding: 10px;
+     border: grey;
+    border-radius: 17px;
+    border-style: solid; 
+}
+
+
+
+
+#contentItemsCarrusel{
+    height: 400px;
+    overflow: hidden; 
+    width: 1500px;
+    margin: 0 auto;    
+}
+
+
+.itemCarrusel{
+    height: 400px;
+    width: 1000px;
+    position: sticky;
+    padding: 0 5rem 6rem;
+
+}
+
+.tarjetaCarrusel{
+    height: 80%;
+    
+}
+
+.flechasCarrusel{
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 80;
+    align-items: center;
+    
+
+}
+
+
+#tarjetaCarrusel-1{
+    background-color:aliceblue;
+    display: inline-block;
+    height: 80%;
+    width: 95%;
+    position: relative;
+    align-items: center;
+}
+
+#tarjetaCarrusel-2{
+    background-color: aliceblue;
+    display: inline-block;
+    height: 80%;
+    width: 95%;
+    position: relative;
+    align-items: center;
+}
+
+#tarjetaCarrusel-3{
+    background-color: aliceblue;
+    display: inline-block;
+    height: 80%;
+    width:95%;
+    position: relative;
+    align-items: center;
+
+}
+
+a{
+    text-decoration: none;
+}
+
+i{
+    color:tomato;
+}
+
+#contePuntos{
+    display: flex;
+    justify-content: space-around;
+}
+
+#contePuntos a {
+    font-size: 50px;
+}
+
+.textCarrusel{
+    font-size: 20px;
+    color:darkblue;
+}
+.penp{
+    font-size: 15px;
+}
+
+.verde{
+    color: rgb(96, 150, 14);
+}
+
